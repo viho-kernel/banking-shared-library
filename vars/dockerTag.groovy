@@ -1,13 +1,8 @@
-def call(APP_NAME, IMAGE, SHORT_COMMIT) {
+def call(String appName, String image, String commitId) {
 
-    stage('Tag Docker Image') {
-            steps {
-                sh """
-                docker tag \
-                ${APP_NAME}:${SHORT_COMMIT} \
-                ${IMAGE}:${SHORT_COMMIT}
-                """
-            }
-        }
-    
+    sh """
+    docker tag \
+    ${appName}:${commitId} \
+    ${image}:${commitId}
+    """
 }

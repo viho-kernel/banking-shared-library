@@ -1,11 +1,6 @@
-def call(IMAGE, SHORT_COMMIT) {
+def call(String image, String commitId) {
 
-            stage('Push Image to Amazon ECR') {
-            steps {
-                sh """
-                docker push ${IMAGE}:${SHORT_COMMIT}
-                """
-            }
-        }
-
+    sh """
+    docker push ${image}:${commitId}
+    """
 }

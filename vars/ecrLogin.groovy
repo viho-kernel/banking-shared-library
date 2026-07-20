@@ -1,17 +1,12 @@
-def call(AWS_REGION, AWS_ACCOUNT) {
+def call(String awsRegion, String awsAccount) {
 
-    echo "Logging in EC2"
+    echo "Logging into Amazon ECR..."
 
-    stage('Login to Amazon ECR') {
-            steps {
-sh """
-aws ecr get-login-password --region ${AWS_REGION} | \
-docker login \
---username AWS \
---password-stdin \
-${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com
-"""
-            }
-        }
-
+    sh """
+    aws ecr get-login-password --region ${awsRegion} | \
+    docker login \
+    --username AWS \
+    --password-stdin \
+    ${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com
+    """
 }
