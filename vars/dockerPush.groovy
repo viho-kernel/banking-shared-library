@@ -1,6 +1,5 @@
-def call(String image, String commitId) {
-
+def call(String image, String commit) {
     sh """
-    docker push ${image}:${commitId}
+        docker push ${image}:${commit}-${env.BUILD_NUMBER}
     """
 }
