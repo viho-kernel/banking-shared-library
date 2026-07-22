@@ -1,7 +1,7 @@
-def call(String appName, String image, String commitId, String BUILD_NUMBER) {
+def call(String appName, String image, String commitId) {
     sh """
     docker tag \
     ${appName}:${commitId} \
-    ${image}:${commitId}-${BUILD_NUMBER}
+    ${image}:${commitId}-${env.BUILD_NUMBER}
     """
 }
