@@ -3,6 +3,10 @@ def call(String host, String image, String tag) {
     sh """
 ssh -o StrictHostKeyChecking=no ec2-user@${host} "
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 992989046853.dkr.ecr.us-east-1.amazonaws.com && \\
+echo
+echo "Deploying New Image..."
+echo "${image}:${tag}"
+echo "Pulling Image..."
 docker pull ${image}:${tag} && \\
 CURRENT_IMAGE=\$(docker inspect abc-banking --format='{{.Config.Image}}' 2>/dev/null || true)
 echo "Current running image: \$CURRENT_IMAGE"
@@ -26,17 +30,17 @@ done
 
 echo 'Application failed to become healthy.'
 
-if [ -n "\$CURRENT_IMAGE"]
+if [ -n "\$CURRENT_IMAGE" ]
 then
-    echo "Rolling back to \$CURRENT-IMAGE"
+    echo "Rolling back to \$CURRENT_IMAGE"
     docker stop abc-banking || true
     docker rm abc-banking || true
 
     docker run -d \
-         -- name abc-banking \
+         --name abc-banking \
          --restart unless-stopped \
          -p 3000:3000 \
-         \$CURRENT_TIME
+         \$CURRENT_IMAGE
 
       echo "Rollback compleeted."
 else
