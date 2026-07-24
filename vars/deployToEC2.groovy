@@ -1,7 +1,14 @@
 def call(String host, String image, String tag) {
 
-    sh """
+sh """
+
 ssh -o StrictHostKeyChecking=no ec2-user@${host} "
+START_TIME=$(date +%s)
+END_TIME=$(date +%s)
+TOTAL_TIME=$((END_TIME - START_TIME))
+
+
+
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 992989046853.dkr.ecr.us-east-1.amazonaws.com && \\
 echo
 echo "Deploying New Image..."
@@ -46,6 +53,13 @@ then
 else
      echo "No Previous image found. Cannot rollback."
 fi
+
+
+echo
+echo "======================================="
+echo "Deployment Successful"
+echo "Deployment Time : ${TOTAL_TIME} seconds"
+echo "======================================="
 
 exit 1
 "
