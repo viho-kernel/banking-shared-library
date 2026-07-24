@@ -2,6 +2,7 @@ def call(String host, String image, String tag) {
 
 sh """
 
+# Login to EC2
 ssh -o StrictHostKeyChecking=no ec2-user@${host} "
 
 # -------------------------------
@@ -81,11 +82,11 @@ done
 if [ "\\\$HEALTHY" = "true" ]
 then
 
-    END_TIME=\\\$(date +%s)
-    TOTAL_TIME=\\\$(END_TIME-START_TIME)
+    END_TIME=\$(date +%s)
+    TOTAL_TIME=\$((END_TIME - START_TIME))
     echo
     echo "Running Container:"
-    docker ps --filter "name=abc-banking"
+    docker inspect abc-banking --format='Running Image : {{.Config.Image}}'
 
     echo
     echo "========================================"
@@ -94,6 +95,7 @@ then
     echo "Host            : ${host}"
     echo "Application     : abc-banking"
     echo "Image           : ${image}:${tag}"
+    echo "Container       : abc-banking"
     echo "Status          : SUCCESS"
     echo "Deployment Time : \\\${TOTAL_TIME} seconds"
     echo "========================================"
@@ -105,11 +107,15 @@ fi
 # Rollback
 # -------------------------------
 echo
-echo "Application is unhealth."
+echo "Application is unhealthy."
 
 if [ -n "\\\$CURRENT_IMAGE" ]
 then
     echo "Rolling back to \\\$CURRENT_IMAGE"
+    echo
+    echo "==================================="
+    echo "ROLLBACK STARTED"
+    echo "==================================="
     docker stop abc-banking 2>/dev/null || true
     docker rm abc-banking 2>/dev/null || true
 
@@ -117,9 +123,9 @@ then
          --name abc-banking \
          --restart unless-stopped \
          -p 3000:3000 \
-         \\\$CURRENT_IMAGE
+         \$CURRENT_IMAGE || exit 1
 
-      echo "Rollback compleeted."
+      echo "Rollback completed."
 else
      echo "No Previous image found. Cannot rollback."
 fi
