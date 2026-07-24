@@ -25,6 +25,24 @@ do
 done
 
 echo 'Application failed to become healthy.'
+
+if [-n "\$CURRENT_IMAGE"]
+then
+    echo "Rolling back to \$CURRENT-IMAGE"
+    docker stop abc-banking || true
+    docker rm abc-banking || true
+
+    docker run -d \
+         -- name abc-banking \
+         --restart unless-stopped \
+         -p 3000:3000 \
+         \$CURRENT_TIME
+
+      echo "Rollback compleeted."
+else
+     echo "No Previous image found. Cannot rollback."
+fi
+
 exit 1
 "
 """
