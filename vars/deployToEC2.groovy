@@ -14,7 +14,7 @@ echo 'Waiting for application to start...'
 
 for i in {1..5}
 do
-    if curl -fs http://localhost:9999 > /dev/null
+    if curl -fs http://localhost:3000 > /dev/null
     then
         echo 'Application is healthy.'
         exit 0
@@ -26,7 +26,7 @@ done
 
 echo 'Application failed to become healthy.'
 
-if [-n "\$CURRENT_IMAGE"]
+if [ -n "\$CURRENT_IMAGE"]
 then
     echo "Rolling back to \$CURRENT-IMAGE"
     docker stop abc-banking || true
