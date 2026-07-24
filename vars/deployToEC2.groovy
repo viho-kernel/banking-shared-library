@@ -12,7 +12,7 @@ START_TIME=\\\$(date +%s)
 # -------------------------------
 # Login to Amazon ECR
 # -------------------------------
-aws ecr get-login-password --region us-east-1 | \ 
+aws ecr get-login-password --region us-east-1 | 
 docker login --username AWS --password-stdin 992989046853.dkr.ecr.us-east-1.amazonaws.com || exit 1
 echo
 echo '========================================'
